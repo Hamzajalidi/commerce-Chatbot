@@ -1,0 +1,224 @@
+{
+  "name": "My workflow 6",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "id": "8462f48b-5f5b-40bd-a519-6ef7cbf93b88",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -820,
+        200
+      ],
+      "webhookId": "e104e40e-6134-4825-a6f0-8a646d882662"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "👋 Hi there! I'm your personal assistant here to help you with anything related to our ecommerce store.\n\nI can assist you with:\n- Product information\n- Bulk orders\n- Pricing questions\n- Customization options (like adding a logo)\n- Shipping times and return policies\n\nHere’s how I work:\n- I know the details of our products, pricing, and bulk order discounts.\n- I respond politely, professionally, and clearly.\n- If you're placing a bulk order, I’ll ask for the quantity you need, when you need it, and whether you have your artwork or logo ready.\n\n## Product Pricing (Standard Retail):\n- **Custom Notebook**: $12.00 each  \n- **Eco Water Bottle**: $15.00 each  \n- **Enamel Mug**: $10.00 each  \n- **Canvas Tote Bag**: $14.00 each\n\n## Bulk Discount Tiers:\n- 50+ units: 10% off  \n- 100+ units: 15% off  \n- 250+ units: 20% off  \n- 500+ units: 25% off  \n*Discounts apply per product type and are automatically calculated.*\n\n## Shipping & Returns:\n- Standard shipping: 3–5 business days  \n- Bulk orders may take 7–14 business days depending on customization\n- Returns accepted within 30 days for non-customized items\n\n## Rules:\n- Be honest and helpful\n- Never make up data or offer discounts outside the tiers above\n- If unsure about something, say a team member will follow up\n- If the customer mentions a bulk order, ask how many units they need and if they have artwork ready\n\n\n- if the customer has confirmed they want to place an order output ***** along with the response. \n\nJust ask your question, and I’ll take it from there!\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        -580,
+        100
+      ],
+      "id": "9effef5a-e9f8-4eb4-b6d8-ed81fa17929e",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -460,
+        320
+      ],
+      "id": "ad01749a-ad5f-4e11-b489-7378efb51a50",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a3eb2967-e920-4342-ad2b-a2ae3b972955",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "*****",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        100
+      ],
+      "id": "ed192900-9d14-4645-b0c3-7ac60d8ece62",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "let text = \"Your order has been placed\"\n\nreturn {text}\n \n "
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c5e0f670-5687-48ff-b08f-8cca2b43dd30",
+      "name": "Code1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ],
+      "id": "a4a61397-bdf3-4294-831c-8eb56abb9383",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        320
+      ],
+      "id": "8e8b17ce-783d-422c-847d-e32165f4574b",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "ddhdcUrih29aDY63",
+          "name": "Groq account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": " ## Ecommerce Chatbot\n ### Build your first Lead Qualification\n ### AI agent – Automatically analyze customer \n ### call transcripts or chats to identify strong \n ### sales leads, saving your team valuable time.",
+        "height": 500,
+        "width": 1260,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -980,
+        -40
+      ],
+      "typeVersion": 1,
+      "id": "5e6c7674-4604-41a0-baa5-3829874ab7cf",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e1ac2306-87ef-4883-9eec-3726a5a757ae",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "41ee81518ba41e7f4c96145ccf649cc7b4f5430a757c91e53f5577107c9853ad"
+  },
+  "id": "5tuIj8zjBeZyQjdt",
+  "tags": [
+    {
+      "createdAt": "2025-08-09T17:23:10.753Z",
+      "updatedAt": "2025-08-09T17:23:10.753Z",
+      "id": "9enJ1gKWUZHckKzy",
+      "name": "#n8n cours"
+    }
+  ]
+}
